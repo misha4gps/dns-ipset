@@ -1,0 +1,13 @@
+debug: false
+nameservers:
+  - 8.8.8.8:53
+  - 8.8.4.4:53
+  - 1.1.1.1:53
+configUpdate: true
+updateInterval: 1m
+address:
+  .local: 127.0.0.1
+ipsets:
+  vpn:
+    - docker.com
+    - graylog.org
