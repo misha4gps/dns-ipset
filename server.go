@@ -54,7 +54,7 @@ func handleDnsRequest(w dns.ResponseWriter, r *dns.Msg) {
 	m := new(dns.Msg)
 	m.SetReply(r)
 	parseQuery(m)
-	w.WriteMsg(m)
+	_ = w.WriteMsg(m)
 }
 
 func Lookup(m *dns.Msg) (*dns.Msg, error) {
