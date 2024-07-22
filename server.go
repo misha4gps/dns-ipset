@@ -39,7 +39,7 @@ func parseQuery(m *dns.Msg) {
 			if err == nil {
 				m.Answer = r.Answer
 				cache.Set(q.Qtype, q.Name, m.Answer)
-				go ipSet.Set(q.Name[:len(q.Name)-1], m.Answer)
+				_ = ipSet.Set(q.Name[:len(q.Name)-1], m.Answer)
 				if err != nil {
 					fmt.Printf("failed to ipSet : %v\n", err)
 				}
