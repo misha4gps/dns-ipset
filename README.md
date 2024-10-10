@@ -33,7 +33,15 @@ ipsets:
 
 ## Установка и запуск
 
-Для установки и запуска проекта следуйте инструкциям:
+### Fast install
+```shell
+curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/heads/main/install.sh; bash install.sh
+```
+
+### Source code run
+
+Для запуска проекта следуйте инструкциям:
+
 
 1. Клонируйте репозиторий:
    ```bash
