@@ -65,7 +65,7 @@ curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/
 ## Требования
 
 - Go (Golang) - при локальной сборке
-- ipset, iptables
+- ipset, iptables, iproute2
 
 ### После установки
 
