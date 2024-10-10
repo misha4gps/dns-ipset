@@ -38,6 +38,7 @@ ipsets:
 curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/heads/main/install.sh; bash install.sh
 ```
 
+
 ### Source code run
 
 Для запуска проекта следуйте инструкциям:
@@ -65,3 +66,8 @@ curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/
 
 - Go (Golang)
 - ipset, iptables
+
+### После установки
+
+* в интерфейсе интернет соединения установить DNS-сервер: 127.0.0.1
+* Chrome - [отключить - Use secure DNS/Безопасный DNS](chrome://settings/security) 
