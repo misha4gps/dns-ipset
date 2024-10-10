@@ -70,4 +70,4 @@ curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/
 ### После установки
 
 * в интерфейсе интернет соединения установить DNS-сервер: 127.0.0.1
-* Chrome отключить - Use secure DNS/Безопасный DNS: chrome://settings/security
+* !нужно тестировать - **Chrome** отключить - Use secure DNS/Безопасный DNS: chrome://settings/security ()
