@@ -2,8 +2,17 @@
 
 set -e
 
-echo -e "**** Domains to VPN (via dns server and ipset) \xF0\x9F\x98\x83 ***"
-read -p "* Скрипту требуются пакеты: wireguard/wireguard-tools, curl, ipset, iptables и iproute2 - они установлены? (any key) " user
+echo -e "\n**** Domains to VPN (via dns server and ipset) \xF0\x9F\x98\x83 ***\n"
+
+while true; do
+    read -p "* Скрипту требуются пакеты: wireguard/wireguard-tools, curl, ipset, iptables и iproute2 - они установлены? (y/n) "  yn
+    case $yn in
+        [YyНн]* ) break;;
+        [NnТт]* ) echo -e "\n*** Установишь, возвращайся *** \n"; exit;;
+        * ) echo "Ну y или n в чем проблема?";;
+    esac
+done
+
 
 echo "* Скачиваю конфиг сервиса"
 sudo curl -Lks -z /etc/systemd/system/dns-ipset.service https://github.com/xMlex/dns-ipset/raw/refs/heads/main/dns-ipset.service -o /etc/systemd/system/dns-ipset.service
