@@ -3,10 +3,11 @@
 set -e
 
 echo -e "**** Domains to VPN (via dns server and ipset) \xF0\x9F\x98\x83 ***"
-read -p "скрипту требуются пакеты: wireguard/wireguard-tools, curl, ipset, iptables и iproute2 - они установлены? (any key) " user
+read -p "* Скрипту требуются пакеты: wireguard/wireguard-tools, curl, ipset, iptables и iproute2 - они установлены? (any key) " user
 
-sudo curl -LkS -z /etc/systemd/system/dns-ipset.service https://github.com/xMlex/dns-ipset/raw/refs/heads/main/dns-ipset.service -o /etc/systemd/system/dns-ipset.service
-#sudo systemctl daemon-reload
+echo "* Скачиваю конфиг сервиса"
+sudo curl -Lks -z /etc/systemd/system/dns-ipset.service https://github.com/xMlex/dns-ipset/raw/refs/heads/main/dns-ipset.service -o /etc/systemd/system/dns-ipset.service
+sudo systemctl daemon-reload
 
 if [ ! -d /etc/wireguard ]; then echo "Директория /etc/wireguard не существует - паника 🫠"; exit 1; fi
 
@@ -16,10 +17,15 @@ sudo curl -Lks https://github.com/xMlex/dns-ipset/raw/refs/heads/main/config.exa
 
 if [ ! -f /opt/dns-ipset/config.yaml ]; then echo "Базовый конфиг установлен - /opt/dns-ipset/config.yaml"; sudo cp /opt/dns-ipset/config.example.yaml /opt/dns-ipset/config.yaml; fi
 
-echo "Включаю службу dns-ipset"
-#sudo systemctl enable dns-ipset
-echo "Стартую службу dns-ipset"
-#sudo systemctl restart dns-ipset
+echo "* Скачиваю dns-ipset"
+sudo curl -L -z /opt/dns-ipset/dns-ipset-linux-amd64.tar.gz -o /opt/dns-ipset/dns-ipset-linux-amd64.tar.gz https://github.com/xMlex/dns-ipset/releases/download/v1.0.0/dns-ipset-linux-amd64.tar.gz
+sudo tar -C /opt/dns-ipset -xzf /opt/dns-ipset/dns-ipset-linux-amd64.tar.gz
+sudo mv /opt/dns-ipset/dns-ipset-linux-amd64 /opt/dns-ipset/dns-ipset
+
+echo "* Включаю службу dns-ipset"
+sudo systemctl enable dns-ipset
+echo "* Стартую службу dns-ipset"
+sudo systemctl restart dns-ipset
 
 echo ""
 echo -e "**** Поздравляю \xF0\x9F\x98\x83 ***"
