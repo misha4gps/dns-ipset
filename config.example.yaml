@@ -9,5 +9,15 @@ address:
   .local: 127.0.0.1
 ipsets:
   vpn:
-    - docker.com
     - graylog.org
+    - .ua
+    - mattermost.com
+    - redis.io
+    - amazon.com
+    - googlevideo.com
+    - jetbrains.com
+    - discord.gg
+    - discord.com
+    - discordapp.com
+    - discordapp.net
+    - discord-attachments-uploads-prd.storage.googleapis.com
