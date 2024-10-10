@@ -2,16 +2,32 @@
 
 set -e
 
+TARGETS=(
+amd64
+386
+mips
+mipsle
+mips64
+mips64le
+arm
+)
+
 mkdir -p build
 
-echo "build linux amd64"
-CGO_ENABLED=0 GOOS="linux" GOARCH="amd64" go build -o build/dns-ipset-linux-amd64 .
-cd build
-tar -cvzf dns-ipset-linux-amd64.tar.gz dns-ipset-linux-amd64
-cd ../
 
-echo "build linux 386"
-CGO_ENABLED=0 GOOS="linux" GOARCH="386" go build -o build/dns-ipset-linux-386 .
-cd build
-tar -cvzf dns-ipset-linux-386.tar.gz dns-ipset-linux-386
-cd ../
+for TARGET in ${TARGETS[@]}; do
+  echo "build linux $TARGET"
+  # if target starts with mips*, , add argument: GOMIPS=softfloat
+  CGO_ENABLED=0 GOOS="linux" GOARCH="$TARGET" go build -trimpath -ldflags="-s -w" -o build/dns-ipset-linux-$TARGET .
+  cd build
+  tar -cvzf dns-ipset-linux-$TARGET.tar.gz dns-ipset-linux-$TARGET
+  cd ../
+
+  if [[ $TARGET == mips* ]]; then
+    echo "build linux $TARGET-softfloat"
+    CGO_ENABLED=0 GOOS="linux" GOARCH="$TARGET" GOMIPS=softfloat go build -trimpath -ldflags="-s -w" -o build/dns-ipset-linux-$TARGET-softfloat .
+    cd build
+    tar -cvzf dns-ipset-linux-$TARGET-softfloat.tar.gz dns-ipset-linux-$TARGET-softfloat
+    cd ../
+  fi
+done
