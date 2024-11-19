@@ -11,6 +11,7 @@ import (
 
 type Config struct {
 	Debug          bool
+	Host           string              `yaml:"host"`
 	Nameservers    []string            `yaml:"nameservers"`
 	IpSets         map[string][]string `yaml:"ipsets"`
 	Address        map[string]string   `yaml:"address"`

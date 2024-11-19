@@ -27,7 +27,7 @@ func main() {
 	// start server
 	//port := 5354
 	port := 53
-	server := &dns.Server{Addr: ":" + strconv.Itoa(port), Net: "udp"}
+	server := &dns.Server{Addr: config.Host + ":" + strconv.Itoa(port), Net: "udp"}
 	log.Printf("Starting at %d\n", port)
 	err = server.ListenAndServe()
 	defer server.Shutdown()
