@@ -12,8 +12,9 @@ type Cache interface {
 }
 
 type CacheItem struct {
-	Ip  []dns.RR
-	Die time.Time
+	Ip       []dns.RR
+	Die      time.Time
+	LastUsed time.Time
 }
 
 type MemoryCache struct {
@@ -36,12 +37,11 @@ func (c *MemoryCache) Get(reqType uint16, domain string) []dns.RR {
 
 	if m, ok := c.cache[reqType]; ok {
 		if ip, ok := m[domain]; ok {
-			if ip.Die.After(time.Now()) {
-				for _, ipV := range ip.Ip {
-					ipV.Header().Ttl = uint32(ip.Die.Sub(time.Now()) / time.Second)
-				}
-				return ip.Ip
+			for _, ipV := range ip.Ip {
+				ipV.Header().Ttl = uint32(ip.Die.Sub(time.Now()) / time.Second)
 			}
+			ip.LastUsed = time.Now()
+			return ip.Ip
 		}
 	}
 
@@ -61,7 +61,8 @@ func (c *MemoryCache) Set(reqType uint16, domain string, answers []dns.RR) {
 	}
 
 	m[domain] = &CacheItem{
-		Ip: answers,
+		Ip:       answers,
+		LastUsed: time.Now(),
 	}
 
 	if len(answers) == 0 {
@@ -88,7 +89,7 @@ func (c *MemoryCache) cleaner() {
 
 		for _, v := range c.cache {
 			for k, vv := range v {
-				if vv.Die.Before(now) {
+				if vv.Die.Before(now) && now.Sub(vv.LastUsed) >= 5*time.Minute {
 					delete(v, k)
 				}
 			}
