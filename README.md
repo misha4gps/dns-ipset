@@ -71,3 +71,23 @@ curl -o install.sh -z install.sh -L https://github.com/xMlex/dns-ipset/raw/refs/
 
 * в интерфейсе интернет соединения установить DNS-сервер: 127.0.0.1
 * **Chrome** отключить - Use secure DNS/Безопасный DNS: chrome://settings/security ()
+
+### Arch linux
+
+```shell
+mkdir /etc/systemd/resolved.conf.d
+nano /etc/systemd/resolved.conf.d/dns_servers.conf
+```
+
+set:
+```shell
+[Resolve]
+DNS=127.0.0.1
+Domains=~.
+FallbackDNS=10.111.0.235
+```
+
+```shell
+systemctl restart systemd-resolved
+resolvectl query front.ugsk.ru
+```

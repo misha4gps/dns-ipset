@@ -10,14 +10,15 @@ address:
 ipsets:
   vpn:
     - graylog.org
-    - .ua
     - mattermost.com
     - redis.io
     - amazon.com
+    - youtube.com
     - googlevideo.com
     - jetbrains.com
-    - discord.gg
-    - discord.com
-    - discordapp.com
-    - discordapp.net
-    - discord-attachments-uploads-prd.storage.googleapis.com
+    - clamav.net
+    - chatgpt.com
+    - twitter.com
+    - x.com
+    - twimg.com
+    - t.co
