@@ -38,6 +38,9 @@ func (c *MemoryCache) Get(reqType uint16, domain string) []dns.RR {
 	if m, ok := c.cache[reqType]; ok {
 		if ip, ok := m[domain]; ok {
 			for _, ipV := range ip.Ip {
+				if ip.Die.Before(time.Now()) {
+					return nil
+				}
 				ipV.Header().Ttl = uint32(ip.Die.Sub(time.Now()) / time.Second)
 			}
 			ip.LastUsed = time.Now()
@@ -63,21 +66,23 @@ func (c *MemoryCache) Set(reqType uint16, domain string, answers []dns.RR) {
 	m[domain] = &CacheItem{
 		Ip:       answers,
 		LastUsed: time.Now(),
+		Die:      time.Now().Add(10 * time.Second),
 	}
 
 	if len(answers) == 0 {
-		m[domain].Die = time.Now().Add(10 * time.Second)
 		return
 	}
 
+	globalMinTtl := uint32(10)
 	minTtl := answers[0].Header().Ttl
 	for _, answer := range answers {
 		if answer.Header().Ttl < minTtl {
 			minTtl = answer.Header().Ttl
+			answer.Header().Ttl = globalMinTtl
 		}
 	}
-	if minTtl > 1800 {
-		minTtl = 1800
+	if minTtl < globalMinTtl {
+		minTtl = globalMinTtl
 	}
 	m[domain].Die = time.Now().Add(time.Duration(minTtl) * time.Second)
 }

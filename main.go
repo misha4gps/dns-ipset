@@ -24,6 +24,8 @@ func main() {
 	// attach request handler func
 	dns.HandleFunc(".", handleDnsRequest)
 
+	DnsExchangeHandler = NewDnsHandler(config.Nameservers)
+
 	// start server
 	//port := 5354
 	port := 53

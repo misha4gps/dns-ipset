@@ -1,8 +1,14 @@
 debug: false
 nameservers:
-  - 8.8.8.8:53
-  - 8.8.4.4:53
-  - 1.1.1.1:53
+  - 77.88.8.8:853:common.dot.dns.yandex.net
+  - 8.8.8.8:853:dns.google
+  - 8.8.4.4:853:dns.google
+  - 1.1.1.1:853:cloudflare-dns.com
+  - 1.0.0.1:853:cloudflare-dns.com
+#  - 8.8.8.8:53
+#  - 8.8.4.4:53
+#  - 77.88.8.8:53
+#  - 77.88.8.1:53
 configUpdate: true
 updateInterval: 1m
 address:

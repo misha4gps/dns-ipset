@@ -23,29 +23,31 @@ func parseQuery(m *dns.Msg) {
 						m.Answer = append(m.Answer, rr)
 						addResolvedByAnswer("config", err, name, m)
 						processed = true
-						continue
+						break
 					}
 				}
 			}
 		}
-		if processed == false {
-			cachedReq := cache.Get(q.Qtype, q.Name)
-			if cachedReq != nil {
-				m.Answer = cachedReq
-				continue
-			}
+		if processed {
+			continue
+		}
+		cachedReq := cache.Get(q.Qtype, q.Name)
+		if cachedReq != nil {
+			m.Answer = cachedReq
+			addResolvedByAnswer("cache", nil, q.Name, m)
+			continue
+		}
 
-			r, err := Lookup(m)
-			if err == nil {
-				m.Answer = r.Answer
-				cache.Set(q.Qtype, q.Name, m.Answer)
-				_ = ipSet.Set(q.Name[:len(q.Name)-1], m.Answer)
-				if err != nil {
-					fmt.Printf("failed to ipSet : %v\n", err)
-				}
-			} else {
-				fmt.Printf("failed to exchange: %v\n", err)
+		r, err := Lookup(m)
+		if err == nil {
+			m.Answer = r.Answer
+			cache.Set(q.Qtype, q.Name, m.Answer)
+			_ = ipSet.Set(q.Name[:len(q.Name)-1], m.Answer)
+			if err != nil {
+				fmt.Printf("failed to ipSet : %v\n", err)
 			}
+		} else {
+			fmt.Printf("failed to exchange: %v\n", err)
 		}
 	}
 }
@@ -65,43 +67,15 @@ func Lookup(m *dns.Msg) (*dns.Msg, error) {
 
 	qName := req.Question[0].Name
 
-	c := &dns.Client{
-		ReadTimeout:  time.Millisecond * 250,
-		WriteTimeout: time.Millisecond * 100,
-	}
-
 	res := make(chan *dns.Msg, 1)
-	queue := make(chan int, 1)
-	queue <- 1
-	stopped := false
-	L := func(nameserver string, i int) {
-		<-queue
-		r, _, err := c.Exchange(req, nameserver)
-		defer func() {
-			if !stopped {
-				queue <- 1
-			}
-		}()
-		if err != nil {
-			//log.Printf("[%d] %s socket error on %s, error: %s", i, qName, nameserver, err.Error())
-			return
-		}
-		if r != nil && r.Rcode != dns.RcodeSuccess {
-			if r.Rcode == dns.RcodeServerFailure {
-				return
-			}
-		}
-		addResolvedByAnswer(nameserver, err, qName, r)
-		stopped = true
-		res <- r
-	}
 
-	// Start lookup on each nameserver top-down, in every second
-	for i, nameserver := range config.Nameservers {
-		go L(nameserver, i)
+	exchangeMsg := &DnsExchangeMessage{
+		Message:    req,
+		ReturnChan: res,
 	}
+	DnsExchangeHandler.Handle(exchangeMsg)
 
-	ticker := time.NewTicker(2000 * time.Millisecond)
+	ticker := time.NewTicker(time.Second * 4)
 	defer ticker.Stop()
 
 	select {
@@ -114,8 +88,13 @@ func Lookup(m *dns.Msg) (*dns.Msg, error) {
 
 func addResolvedByAnswer(nameserver string, err error, qName string, r *dns.Msg) {
 	rr, err := dns.NewRR(fmt.Sprintf("%s TXT %s", "dns.resolved.via", nameserver))
-	if err == nil {
-		rr.Header().Ttl = 60
-		r.Answer = append(r.Answer, rr)
+	if err != nil {
+		rr.Header().Ttl = 15
 	}
+	for i, rrA := range r.Answer {
+		if rrA.Header().Ttl > 600 {
+			r.Answer[i].Header().Ttl = 600
+		}
+	}
+	r.Answer = append(r.Answer, rr)
 }
