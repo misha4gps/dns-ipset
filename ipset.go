@@ -46,6 +46,7 @@ func (c *BaseIpSet) Set(domain string, ipList []dns.RR) (err error) {
 					if ttl <= 0 {
 						ttl = 10
 					}
+					ttl += 15
 					err := c.sets[setName].Add(ip.(*dns.A).A.String(), ttl)
 					if err != nil {
 						log.Println("c.sets[setName].Add(ip.(*dns.A).A.String(), int(ip.Header().Ttl-1)): ", err)

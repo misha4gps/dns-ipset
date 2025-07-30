@@ -38,8 +38,8 @@ func NewDnsHandler(NameServerAddrs []string) *DnsHandler {
 		for i := 0; i < len(res.clients[addr]); i++ {
 			res.clients[addr][i] = &dns.Client{
 				Net:          net,
-				ReadTimeout:  time.Second * 1,
-				WriteTimeout: time.Second * 1,
+				ReadTimeout:  time.Millisecond * 1500,
+				WriteTimeout: time.Millisecond * 1500,
 				TLSConfig: &tls.Config{
 					ServerName:         tlsServerName,
 					InsecureSkipVerify: false,
