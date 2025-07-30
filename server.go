@@ -95,9 +95,6 @@ func addResolvedByAnswer(nameserver string, err error, qName string, r *dns.Msg)
 		if rrA.Header().Ttl > 600 {
 			r.Answer[i].Header().Ttl = 600
 		}
-		if rrA.Header().Ttl < 180 {
-			r.Answer[i].Header().Ttl = 180
-		}
 	}
 	r.Answer = append(r.Answer, rr)
 }
