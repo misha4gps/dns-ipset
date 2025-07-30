@@ -60,8 +60,8 @@ func (h *DnsHandler) runWorker(client *dns.Client, srvAddr string) {
 		for msg := range h.msgChan {
 			in, _, err := client.Exchange(msg.Message, srvAddr)
 			if err != nil {
-				if msg.returnCount < 3 {
-					log.Printf("DNS[%s] Exchange error[%d]: %s", srvAddr, msg.returnCount, err)
+				if msg.returnCount <= 3 {
+					log.Printf("DNS[%s] Exchange error[%d]: %s for %s", srvAddr, msg.returnCount, err, msg.Message.Question[0].Name)
 					msg.returnCount++
 					h.msgChan <- msg // return msg
 				} else {

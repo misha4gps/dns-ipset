@@ -75,7 +75,7 @@ func Lookup(m *dns.Msg) (*dns.Msg, error) {
 	}
 	DnsExchangeHandler.Handle(exchangeMsg)
 
-	ticker := time.NewTicker(time.Second * 4)
+	ticker := time.NewTicker(time.Millisecond * 6300)
 	defer ticker.Stop()
 
 	select {
