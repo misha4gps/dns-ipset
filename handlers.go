@@ -2,10 +2,11 @@ package main
 
 import (
 	"crypto/tls"
-	"github.com/miekg/dns"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/miekg/dns"
 )
 
 var DnsExchangeHandler *DnsHandler
@@ -34,12 +35,12 @@ func NewDnsHandler(NameServerAddrs []string) *DnsHandler {
 			addr = srvAddr[:idx+4]
 			tlsServerName = srvAddr[idx+5:]
 		}
-		res.clients[addr] = make([]*dns.Client, 2)
+		res.clients[addr] = make([]*dns.Client, 32)
 		for i := 0; i < len(res.clients[addr]); i++ {
 			res.clients[addr][i] = &dns.Client{
 				Net:          net,
-				ReadTimeout:  time.Millisecond * 1500,
-				WriteTimeout: time.Millisecond * 1500,
+				ReadTimeout:  time.Millisecond * 4500,
+				WriteTimeout: time.Millisecond * 4500,
 				TLSConfig: &tls.Config{
 					ServerName:         tlsServerName,
 					InsecureSkipVerify: false,
@@ -62,8 +63,8 @@ func (h *DnsHandler) runWorker(client *dns.Client, srvAddr string) {
 			if err != nil {
 				if msg.returnCount <= 3 {
 					log.Printf("DNS[%s] Exchange error[%d]: %s for %s", srvAddr, msg.returnCount, err, msg.Message.Question[0].Name)
-					msg.returnCount++
-					h.msgChan <- msg // return msg
+					//msg.returnCount++
+					//h.msgChan <- msg // return msg
 				} else {
 					log.Printf("DNS[%s] Exchange[error]: %s", srvAddr, err)
 				}
