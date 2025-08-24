@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/miekg/dns"
 	"strings"
 	"time"
+
+	"github.com/miekg/dns"
 )
 
 func parseQuery(m *dns.Msg) {
@@ -95,6 +96,7 @@ func addResolvedByAnswer(nameserver string, err error, qName string, r *dns.Msg)
 		if rrA.Header().Ttl > 600 {
 			r.Answer[i].Header().Ttl = 600
 		}
+		r.Answer[i].Header().Ttl += 10
 	}
 	r.Answer = append(r.Answer, rr)
 }
