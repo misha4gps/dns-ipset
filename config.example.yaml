@@ -13,6 +13,7 @@ configUpdate: true
 updateInterval: 1m
 address:
   .local: 127.0.0.1
+port: 10053
 ipsets:
   vpn:
     - graylog.org
