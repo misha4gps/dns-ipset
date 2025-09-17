@@ -84,10 +84,10 @@ set:
 [Resolve]
 DNS=127.0.0.1
 Domains=~.
-FallbackDNS=10.111.0.235
+FallbackDNS=8.8.8.8
 ```
 
 ```shell
 systemctl restart systemd-resolved
-resolvectl query front.ugsk.ru
+resolvectl query ya.ru
 ```
