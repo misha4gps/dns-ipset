@@ -11,9 +11,10 @@ nameservers:
 #  - 77.88.8.1:53
 configUpdate: true
 updateInterval: 1m
+#host: localhost
+#port: 10053
 address:
   .local: 127.0.0.1
-port: 10053
 ipsets:
   vpn:
     - graylog.org
