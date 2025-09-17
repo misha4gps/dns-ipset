@@ -29,6 +29,9 @@ func main() {
 	// start server
 	//port := 5354
 	port := 53
+	if config.Port > 1023 {
+		port = int(config.Port)
+	}
 	server := &dns.Server{Addr: config.Host + ":" + strconv.Itoa(port), Net: "udp"}
 	log.Printf("Starting at %d\n", port)
 	err = server.ListenAndServe()
