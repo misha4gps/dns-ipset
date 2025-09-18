@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/janeczku/go-ipset/ipset"
-	"github.com/miekg/dns"
 	"log"
 	"strings"
 	"sync"
+	"time"
+
+	"github.com/janeczku/go-ipset/ipset"
+	"github.com/miekg/dns"
 )
 
 type IpSet interface {
@@ -50,7 +52,10 @@ func (c *BaseIpSet) Set(domain string, ipList []dns.RR) (err error) {
 					err := c.sets[setName].Add(ip.(*dns.A).A.String(), ttl)
 					if err != nil {
 						log.Println("c.sets[setName].Add(ip.(*dns.A).A.String(), int(ip.Header().Ttl-1)): ", err)
+					} else {
+						time.Sleep(1 * time.Millisecond)
 					}
+
 				}
 			}
 		}
