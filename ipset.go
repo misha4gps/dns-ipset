@@ -1,13 +1,12 @@
 package main
 
 import (
+	"github.com/janeczku/go-ipset/ipset"
+	"github.com/miekg/dns"
 	"log"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/janeczku/go-ipset/ipset"
-	"github.com/miekg/dns"
 )
 
 type IpSet interface {
